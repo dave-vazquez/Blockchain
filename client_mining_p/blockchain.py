@@ -139,15 +139,20 @@ def last_block():
 def mine():
 
     data = request.get_json()
+    print("!!!")
+    print("!!!")
+    print("!!!")
+    print("!!!")
+    print(data['proof'])
 
-    if data.proof is None or data.id is None:
+    if data['proof'] is None or data['id'] is None:
         return jsonify({
             'message': 'proof and/or id not present in the request body'
         }), 400
     else:
-        block_string = json.dumps(block, sort_keys=True)
+        block_string = json.dumps(blockchain.last_block, sort_keys=True)
 
-        if blockchain.valid_proof(block_string, data.proof):
+        if blockchain.valid_proof(block_string, data['proof']):
 
             # Forge the new Block by adding it to the chain with the proof
             previous_hash = blockchain.hash(blockchain.last_block)

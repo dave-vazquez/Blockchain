@@ -3,6 +3,9 @@ import requests
 
 import sys
 import json
+import os
+
+os.system('clear')
 
 
 def proof_of_work(block):
@@ -76,12 +79,10 @@ if __name__ == '__main__':
         print(f"r: ---> {r}")
         data = r.json()
 
-        response = json.dumps(data, sort_keys=True)
-
         # TODO: If the server responds with a 'message' 'New Block Forged'
         # add 1 to the number of coins mined and print it.  Otherwise,
         # print the message from the server.
 
-        if response.message == 'New Block Forged':
+        if data['message'] == 'New Block Forged':
             coins_mined += 1
             print(f"coins mined: {coins_mined}")
