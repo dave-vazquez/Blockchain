@@ -12,7 +12,7 @@ class Blockchain(object):
         self.current_transactions = []
 
         # Create the genesis block
-        self.new_block(previous_hash=1, proof=100)
+        self.new_block(proof=100, previous_hash=1)
 
     def new_block(self, proof, previous_hash=None):
         """
@@ -121,6 +121,13 @@ class Blockchain(object):
         return guess_hash[:4] == "0000"
 
 
+'''
+***********  START OF SERVER ***************
+***********  START OF SERVER ***************
+***********  START OF SERVER ***************
+'''
+
+
 # Instantiate our Node
 app = Flask(__name__)
 
@@ -129,6 +136,9 @@ node_identifier = str(uuid4()).replace('-', '')
 
 # Instantiate the Blockchain
 blockchain = Blockchain()
+@app.route('/', methods=['GET'])
+def hello():
+    return "running blockchain.py"
 
 
 @app.route('/mine', methods=['GET'])
