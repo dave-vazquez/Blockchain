@@ -15,20 +15,6 @@ class Blockchain(object):
         self.new_block(proof=100, previous_hash=1)
 
     def new_block(self, proof, previous_hash=None):
-        """
-        Create a new Block in the Blockchain
-
-        A block should have:
-        * Index
-        * Timestamp
-        * List of current transactions
-        * The proof used to mine this block
-        * The hash of the previous block
-
-        :param proof: <int> The proof given by the Proof of Work algorithm
-        :param previous_hash: (Optional) <str> Hash of previous Block
-        :return: <dict> New Block
-        """
 
         if len(self.chain) > 0:
             block_string = json.dumps(self.last_block, sort_keys=True)
@@ -104,7 +90,7 @@ class Blockchain(object):
         """
         guess = f"{block_string}{proof}".encode()
         guess_hash = hashlib.sha256(guess).hexdigest()
-        return guess_hash[:3] == "000"
+        return guess_hash[:5] == "00000"
 
 
 '''
