@@ -116,9 +116,8 @@ def hello():
 @app.route('/last_block', methods=['GET'])
 def last_block():
     return jsonify({
-        'status': 200,
         'last_block': blockchain.last_block
-    })
+    }), 200
 
 
 @app.route('/mine', methods=['POST'])
@@ -166,3 +165,7 @@ def full_chain():
 # Run the program on port 5000
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
+
+'''
+Brady curl request: curl -X POST -H "Content-Type: application/json" -d '{"test":"teststring"}' localhost:5000/mine
+'''
