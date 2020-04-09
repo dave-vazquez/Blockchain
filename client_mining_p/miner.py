@@ -66,7 +66,6 @@ if __name__ == '__main__':
             print("Response returned:")
             print(r)
             break
-
         # last_block = json.dumps(data['last_block'], sort_keys=True)
         last_block = data['last_block']
 
@@ -80,7 +79,7 @@ if __name__ == '__main__':
         r = requests.post(url=node + "/mine", json=post_data)
         data = r.json()
 
-        if data['message'] == 'New Block Forged':
+        if r.status_code == 201:
             coins_mined += 1
             print(f"coins mined: $ {coins_mined}\n")
             print("******************************")

@@ -146,7 +146,7 @@ def mine():
                 'previous_hash': block['previous_hash'],
             }
 
-            return jsonify(response), 200
+            return jsonify(response), 201
         else:
             return jsonify({
                 'message': 'proof not valid'
