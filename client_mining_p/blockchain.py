@@ -104,7 +104,7 @@ class Blockchain(object):
         """
         guess = f"{block_string}{proof}".encode()
         guess_hash = hashlib.sha256(guess).hexdigest()
-        return guess_hash[:6] == "000000"
+        return guess_hash[:3] == "000"
 
 
 '''
@@ -139,11 +139,6 @@ def last_block():
 def mine():
 
     data = request.get_json()
-    print("!!!")
-    print("!!!")
-    print("!!!")
-    print("!!!")
-    print(data['proof'])
 
     if data['proof'] is None or data['id'] is None:
         return jsonify({
@@ -156,7 +151,7 @@ def mine():
 
             # Forge the new Block by adding it to the chain with the proof
             previous_hash = blockchain.hash(blockchain.last_block)
-            block = blockchain.new_block(data.proof, previous_hash)
+            block = blockchain.new_block(data['proof'], previous_hash)
 
             response = {
                 'message': "New Block Forged",

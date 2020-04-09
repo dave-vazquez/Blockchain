@@ -35,10 +35,10 @@ def valid_proof(block_string, proof):
     correct number of leading zeroes.
     :return: True if the resulting hash is a valid proof, False otherwise
     """
+
     guess = f"{block_string}{proof}".encode()
     guess_hash = hashlib.sha256(guess).hexdigest()
-    # print(f"guess_hash: {guess_hash}")
-    return guess_hash[:6] == "000000"
+    return guess_hash[:3] == "000"
 
 
 if __name__ == '__main__':
@@ -67,22 +67,21 @@ if __name__ == '__main__':
             print(r)
             break
 
-        last_block = json.dumps(data, sort_keys=True)
-        print(last_block)
+        # last_block = json.dumps(data['last_block'], sort_keys=True)
+        last_block = data['last_block']
+
         print("proof_of_work started")
         new_proof = proof_of_work(last_block)
         print(f"proof_of_work complete: {new_proof}")
+
         # When found, POST it to the server {"proof": new_proof, "id": id}
         post_data = {"proof": new_proof, "id": id}
 
         r = requests.post(url=node + "/mine", json=post_data)
-        print(f"r: ---> {r}")
         data = r.json()
-
-        # TODO: If the server responds with a 'message' 'New Block Forged'
-        # add 1 to the number of coins mined and print it.  Otherwise,
-        # print the message from the server.
 
         if data['message'] == 'New Block Forged':
             coins_mined += 1
             print(f"coins mined: {coins_mined}")
+        else:
+            print(data['message'])
