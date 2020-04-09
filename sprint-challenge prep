@@ -1,0 +1,32 @@
+1) Should know how hash_tables work and how to use them
+    - we will apply hash table to solve problems
+    - leet code for practice
+
+    - optimized solution will require use of hash hash_tables
+
+2) focus on proof of work
+  how the miner works
+  how proof of work, works
+  comforable with the miner code, and have pipenv set up, ready to code
+
+3) Interview:
+
+    short 5 min Interview w/ new TL
+    answering three questions
+
+    Explain in detail the workings of a dynamic array:
+    1) What is the runtime complexity to access an array, add or remove from the front, and add or remove from the back?
+    2) What is the worse case scenario if you try to extend the storage size of a dynamic array?
+    3) Explain how a blockchain is structured. What are the blocks, what is the chain? How is the data organized?
+    4) Explain how proof of work functions. How does it operate. How does this protect the chain from attack. 
+        What kind of attack is possible?
+
+    Judged based on fluency, may be follow up questions
+
+    Be concise but cover everything within 5 minutes
+
+    notes are okay, but don't read straight from paper
+    
+    quantified by "would you want to work with this person"
+
+    
