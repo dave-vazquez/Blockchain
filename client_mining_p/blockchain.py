@@ -12,23 +12,9 @@ class Blockchain(object):
         self.current_transactions = []
 
         # Create the genesis block
-        self.new_block(previous_hash=1, proof=100)
+        self.new_block(proof=100, previous_hash=1)
 
     def new_block(self, proof, previous_hash=None):
-        """
-        Create a new Block in the Blockchain
-
-        A block should have:
-        * Index
-        * Timestamp
-        * List of current transactions
-        * The proof used to mine this block
-        * The hash of the previous block
-
-        :param proof: <int> The proof given by the Proof of Work algorithm
-        :param previous_hash: (Optional) <str> Hash of previous Block
-        :return: <dict> New Block
-        """
 
         if len(self.chain) > 0:
             block_string = json.dumps(self.last_block, sort_keys=True)
@@ -90,20 +76,6 @@ class Blockchain(object):
     def last_block(self):
         return self.chain[-1]
 
-    def proof_of_work(self):
-        """
-        Simple Proof of Work Algorithm
-        Stringify the block and look for a proof.
-        Loop through possibilities, checking each one against `valid_proof`
-        in an effort to find a number that is a valid proof
-        :return: A valid proof for the provided block
-        """
-        block_string = json.dumps(self.last_block, sort_keys=True)
-        proof = 0
-        while not self.valid_proof(block_string, proof):
-            proof += 1
-        return proof
-
     @staticmethod
     def valid_proof(block_string, proof):
         """
@@ -118,7 +90,14 @@ class Blockchain(object):
         """
         guess = f"{block_string}{proof}".encode()
         guess_hash = hashlib.sha256(guess).hexdigest()
-        return guess_hash[:4] == "0000"
+        return guess_hash[:5] == "00000"
+
+
+'''
+***********  START OF SERVER ***************
+***********  START OF SERVER ***************
+***********  START OF SERVER ***************
+'''
 
 
 # Instantiate our Node
@@ -129,26 +108,49 @@ node_identifier = str(uuid4()).replace('-', '')
 
 # Instantiate the Blockchain
 blockchain = Blockchain()
+@app.route('/', methods=['GET'])
+def hello():
+    return "running blockchain.py"
 
 
-@app.route('/mine', methods=['GET'])
+@app.route('/last_block', methods=['GET'])
+def last_block():
+    return jsonify({
+        'last_block': blockchain.last_block
+    }), 200
+
+
+@app.route('/mine', methods=['POST'])
 def mine():
-    # Run the proof of work algorithm to get the next proof
-    proof = blockchain.proof_of_work()
 
-    # Forge the new Block by adding it to the chain with the proof
-    previous_hash = blockchain.hash(blockchain.last_block)
-    block = blockchain.new_block(proof, previous_hash)
+    data = request.get_json()
 
-    response = {
-        'message': "New Block Forged",
-        'index': block['index'],
-        'transactions': block['transactions'],
-        'proof': block['proof'],
-        'previous_hash': block['previous_hash'],
-    }
+    if data['proof'] is None or data['id'] is None:
+        return jsonify({
+            'message': 'proof and/or id not present in the request body'
+        }), 400
+    else:
+        block_string = json.dumps(blockchain.last_block, sort_keys=True)
 
-    return jsonify(response), 200
+        if blockchain.valid_proof(block_string, data['proof']):
+
+            # Forge the new Block by adding it to the chain with the proof
+            previous_hash = blockchain.hash(blockchain.last_block)
+            block = blockchain.new_block(data['proof'], previous_hash)
+
+            response = {
+                'message': "New Block Forged",
+                'index': block['index'],
+                'transactions': block['transactions'],
+                'proof': block['proof'],
+                'previous_hash': block['previous_hash'],
+            }
+
+            return jsonify(response), 201
+        else:
+            return jsonify({
+                'message': 'proof not valid'
+            }), 400
 
 
 @app.route('/chain', methods=['GET'])
@@ -163,3 +165,7 @@ def full_chain():
 # Run the program on port 5000
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
+
+'''
+Brady curl request: curl -X POST -H "Content-Type: application/json" -d '{"test":"teststring"}' localhost:5000/mine
+'''
